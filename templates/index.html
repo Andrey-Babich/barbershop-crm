@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,31 +7,160 @@
 
     <meta charset="UTF-8">
 
-    <title>Barbershop CRM</title>
-
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+    <title>
+        BarberShop CRM
+    </title>
 
     <style>
 
-        body {
-            background-color: #121212;
-            color: white;
+        body{
+            margin:0;
+            background:#121212;
+            color:white;
+            font-family:Arial;
         }
 
-        .card {
-            background-color: #1f1f1f;
-            border-radius: 15px;
+        .topbar{
+            width:100%;
+            height:80px;
+
+            background:#1c1c1c;
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            padding:0 40px;
+            box-sizing:border-box;
+
+            border-bottom:3px solid #ff2e63;
         }
 
-        h3 {
-            color: #ffffff;
+        .logo{
+            font-size:32px;
+            font-weight:bold;
+            color:white;
         }
 
-        p {
-            color: #d0d0d0;
+        .user-panel{
+            display:flex;
+            align-items:center;
+            gap:20px;
+        }
+
+        .user-panel span{
+            font-size:18px;
+            color:white;
+        }
+
+        .logout-btn{
+
+            background:#ff2e63;
+
+            color:white;
+
+            padding:12px 24px;
+
+            border-radius:12px;
+
+            transition:0.3s;
+
+            border:none;
+
+            cursor:pointer;
+
+            font-size:16px;
+        }
+
+        .logout-btn:hover{
+            background:#ff4f7a;
+        }
+
+        .title{
+            text-align:center;
+            margin-top:50px;
+            font-size:42px;
+            font-weight:bold;
+        }
+
+        .masters-container{
+
+            width:90%;
+
+            margin:auto;
+            margin-top:50px;
+
+            display:flex;
+            flex-wrap:wrap;
+
+            justify-content:center;
+
+            gap:30px;
+        }
+
+        .master-card{
+
+            width:320px;
+
+            background:#1f1f1f;
+
+            border-radius:20px;
+
+            padding:25px;
+
+            text-align:center;
+
+            box-shadow:0 0 20px rgba(0,0,0,0.4);
+
+            transition:0.3s;
+        }
+
+        .master-card:hover{
+            transform:translateY(-5px);
+        }
+
+        .barber-image{
+
+            width:100%;
+            height:260px;
+
+            object-fit:cover;
+
+            border-radius:15px;
+
+            margin-bottom:20px;
+        }
+
+        .master-name{
+            font-size:28px;
+            margin-bottom:10px;
+        }
+
+        .master-position{
+            color:#bbbbbb;
+            margin-bottom:25px;
+            font-size:18px;
+        }
+
+        .book-btn{
+
+            display:inline-block;
+
+            background:#00bfff;
+
+            color:white;
+
+            text-decoration:none;
+
+            padding:14px 28px;
+
+            border-radius:12px;
+
+            transition:0.3s;
+        }
+
+        .book-btn:hover{
+            background:#0099cc;
         }
 
     </style>
@@ -38,47 +169,83 @@
 
 <body>
 
-<div class="container mt-5">
+<div class="topbar">
 
-    <h1 class="mb-5">
-        Choose Your Barber
-    </h1>
+    <div class="logo">
+        BarberShop CRM
+    </div>
 
-    <div class="row">
+    <div class="user-panel">
 
-        {% for master in masters %}
+        <span>
+            {{ request.user.username }}
+        </span>
 
-        <div class="col-md-4">
+        <form
+            action="/"
+            method="post"
+        >
 
-            <div class="card p-3 mb-4">
+            {% csrf_token %}
 
-                <div class="card-body">
+            <button
+                type="submit"
+                class="logout-btn"
+            >
+                Logout
+            </button>
 
-                    <h3>
-                        {{ master.first_name }}
-                        {{ master.last_name }}
-                    </h3>
+        </form>
 
-                    <p>
-                        {{ master.position }}
-                    </p>
+    </div>
 
-                    <a
-                        href="/booking/{{ master.id }}/"
-                        class="btn btn-warning"
-                    >
-                        Book Now
-                    </a>
+</div>
 
-                </div>
+<div class="title">
+    Choose your barber
+</div>
+
+<div class="masters-container">
+
+    {% for master in masters %}
+
+        <div class="master-card">
+
+            {% if master.photo %}
+                <img
+                    src="{{ master.photo.url }}"
+                    class="barber-image"
+                >
+            {% else %}
+                <img
+                    src="{% static 'images/default.jpg' %}"
+                    class="barber-image"
+                >
+            {% endif %}
+
+            <div class="master-name">
+
+                {{ master.first_name }}
+                {{ master.last_name }}
 
             </div>
 
+            <div class="master-position">
+
+                {{ master.position }}
+
+            </div>
+
+            <a
+                href="/booking/{{ master.id }}/"
+                class="book-btn"
+            >
+                Book now
+            </a>
+
         </div>
 
-        {% endfor %}
-
-    </div>
+    {% endfor %}
 
 </div>
 

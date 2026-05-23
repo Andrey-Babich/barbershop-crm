@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Register</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        body{
+            background: linear-gradient(
+                135deg,
+                #141414,
+                #1f1f1f
+            );
+
+            min-height:100vh;
+            padding:40px 0;
+
+            display:flex;
+
+            justify-content:center;
+
+            align-items:flex-start;
+
+            font-family:Arial;
+        }
+
+        .register-card{
+
+            width:450px;
+
+            margin-top:40px;
+
+            margin-bottom:40px;
+
+            background:#222;
+
+            border-radius:25px;
+
+            padding:40px;
+
+            box-shadow:
+                0 0 30px rgba(0,0,0,0.5);
+
+            color:white;
+        }
+
+        .title{
+
+            text-align:center;
+
+            margin-bottom:30px;
+
+            font-size:32px;
+
+            font-weight:bold;
+
+            color:#00bfff;
+        }
+
+        input{
+
+            width:100%;
+
+            padding:12px;
+
+            margin-top:10px;
+
+            margin-bottom:20px;
+
+            border:none;
+
+            border-radius:12px;
+
+            background:#333;
+
+            color:white;
+        }
+
+        .errorlist {
+            background: rgba(255, 77, 77, 0.15);
+            border: 1px solid #ff4d4d;
+            color: #ff4d4d;
+            padding: 10px;
+            border-radius: 10px;
+            list-style: none;
+            margin-bottom: 15px;
+         }
+
+        button{
+
+            width:100%;
+
+            padding:12px;
+
+            border:none;
+
+            border-radius:12px;
+
+            background:#00bfff;
+
+            color:white;
+
+            font-size:18px;
+
+            transition:0.3s;
+        }
+
+        button:hover{
+
+            background:#0095cc;
+        }
+
+        .links{
+
+            text-align:center;
+
+            margin-top:20px;
+        }
+
+        a{
+
+            color:#00bfff;
+
+            text-decoration:none;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="register-card">
+
+    <div class="title">
+
+        Create Account
+
+    </div>
+
+    <form method="POST">
+
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button>
+
+            Register
+
+        </button>
+
+    </form>
+
+    <div class="links">
+
+        <a href="/accounts/login/">
+
+            Already have account?
+
+        </a>
+
+    </div>
+
+</div>
+
+</body>
+</html>

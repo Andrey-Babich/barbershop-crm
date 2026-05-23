@@ -15,6 +15,12 @@ class Master(models.Model):
         max_length=100
     )
 
+    photo = models.ImageField(
+        upload_to='barbers/',
+        blank=True,
+        null=True
+    )
+
     def __str__(self):
         return (
             f"{self.first_name} "

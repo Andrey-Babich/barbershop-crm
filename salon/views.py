@@ -1,5 +1,3 @@
-from django.shortcuts import render
-
 from django.http import JsonResponse
 
 from rest_framework import viewsets
@@ -7,11 +5,17 @@ from rest_framework import viewsets
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, date
 
+
 from .models import (
     Master,
     Service,
     Appointment
 )
+
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import render, redirect
+from .forms import RegisterForm
 
 from .serializers import (
     MasterSerializer,
@@ -48,7 +52,7 @@ def home(request):
     )
 
 
-def booking_page(request, master_id):
+def booking(request, master_id):
 
     master = Master.objects.get(id=master_id)
 
@@ -92,6 +96,63 @@ def booking_page(request, master_id):
         }
     )
 
+@login_required
+def booking(request, master_id):
+
+    master = Master.objects.get(id=master_id)
+
+    services = Service.objects.all()
+
+    selected_date = request.GET.get("date")
+
+    if not selected_date:
+        selected_date = str(date.today())
+
+    appointments = Appointment.objects.filter(
+        master=master,
+        appointment_date=selected_date
+    )
+
+    booked_times = []
+
+    for appointment in appointments:
+        booked_times.append(
+            appointment.appointment_time
+        )
+
+    time_slots = [
+        "10:00",
+        "11:00",
+        "12:00",
+        "13:00",
+        "14:00",
+        "15:00",
+    ]
+
+    return render(
+        request,
+        'booking.html',
+        {
+            'master': master,
+            'services': services,
+            'time_slots': time_slots,
+            'booked_times': booked_times,
+            'selected_date': selected_date
+        }
+    )
+
+@login_required
+def index(request):
+
+    masters = Master.objects.all()
+
+    return render(
+        request,
+        'index.html',
+        {
+            'masters': masters
+        }
+    )
 
 @csrf_exempt
 def create_appointment(request):
@@ -204,3 +265,25 @@ def create_appointment(request):
     return JsonResponse({
         "success": False
     })
+
+def register(request):
+
+    form = RegisterForm()
+
+    if request.method == 'POST':
+
+        form = RegisterForm(request.POST)
+
+        if form.is_valid():
+
+            form.save()
+
+            return redirect('/accounts/login/')
+
+    return render(
+        request,
+        'register.html',
+        {
+            'form': form
+        }
+    )
