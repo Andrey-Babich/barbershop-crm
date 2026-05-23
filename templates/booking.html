@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Booking</title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+
+        body {
+            background-color: #121212;
+            color: white;
+        }
+
+        .card {
+            background-color: #1f1f1f;
+            border-radius: 15px;
+        }
+
+        .time-btn {
+            margin: 5px;
+        }
+
+        .selected-time {
+            background-color: orange !important;
+            border: none;
+            color: black;
+        }
+
+        h1 {
+            color: #ffffff;
+        }
+
+        p {
+            color: #d0d0d0;
+        }
+
+        .mb-3 {
+            color: #ffffff;
+        }
+
+        .mb-2 {
+            color: #d0d0d0;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container mt-3">
+
+    <a
+        href="/"
+        class="btn btn-outline-light"
+    >
+        ← Back
+    </a>
+
+</div>
+
+<div class="container mt-4">
+
+    <div class="card p-4">
+
+        <h1>
+            {{ master.first_name }}
+            {{ master.last_name }}
+        </h1>
+
+        <p>
+            {{ master.position }}
+        </p>
+
+        <div class="mb-3">
+
+            <label class="mb-2">
+                Select Date
+            </label>
+
+            <input
+                type="date"
+                id="date"
+                value="{{ selected_date }}"
+                class="form-control"
+            >
+
+        </div>
+
+        <div class="mb-3">
+
+            <input
+                type="text"
+                id="client_name"
+                class="form-control"
+                placeholder="Your name"
+            >
+
+        </div>
+
+        <div class="mb-3">
+
+            <select
+                id="service_id"
+                class="form-control"
+            >
+
+                <option value="">
+                    Select service
+                </option>
+
+                {% for service in services %}
+
+                <option value="{{ service.id }}">
+                    {{ service.name }}
+                    -
+                    ${{ service.price }}
+                </option>
+
+                {% endfor %}
+
+            </select>
+
+        </div>
+
+        <h5 class="mb-3">
+            Choose time
+        </h5>
+
+        <div class="mb-4">
+
+            {% for time in time_slots %}
+
+                {% if time not in booked_times %}
+
+                    <button
+                        type="button"
+                        class="btn btn-success time-btn"
+                        onclick="selectTime(this, '{{ time }}')"
+                    >
+                        {{ time }}
+                    </button>
+
+                {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+        <button
+            type="button"
+            class="btn btn-warning"
+            onclick="bookAppointment()"
+        >
+            Book Appointment
+        </button>
+
+        <div
+            id="message"
+            class="mt-4"
+        ></div>
+
+    </div>
+
+</div>
+
+<script>
+
+    let selectedTime = "";
+
+    function selectTime(button, time) {
+
+        selectedTime = time;
+
+        const buttons = document.querySelectorAll(
+            '.time-btn'
+        );
+
+        buttons.forEach(btn => {
+            btn.classList.remove(
+                'selected-time'
+            );
+        });
+
+        button.classList.add(
+            'selected-time'
+        );
+    }
+
+    async function bookAppointment() {
+
+        const clientName =
+            document.getElementById(
+                'client_name'
+            ).value;
+
+        const serviceId =
+            document.getElementById(
+                'service_id'
+            ).value;
+
+        const date =
+            document.getElementById(
+                'date'
+            ).value;
+
+        const message =
+            document.getElementById(
+                'message'
+            );
+
+        if (
+            !clientName ||
+            !serviceId ||
+            !date ||
+            !selectedTime
+        ) {
+
+            message.innerHTML = `
+                <div class="alert alert-danger">
+                    Fill all fields
+                </div>
+            `;
+
+            return;
+        }
+
+        if (/\d/.test(clientName)) {
+
+            message.innerHTML = `
+                <div class="alert alert-danger">
+                    Name cannot contain numbers
+                </div>
+            `;
+
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append(
+            'client_name',
+            clientName
+        );
+
+        formData.append(
+            'master_id',
+            '{{ master.id }}'
+        );
+
+        formData.append(
+            'service_id',
+            serviceId
+        );
+
+        formData.append(
+            'date',
+            date
+        );
+
+        formData.append(
+            'time',
+            selectedTime
+        );
+
+        const response = await fetch(
+            '/create-appointment/',
+            {
+                method: 'POST',
+                body: formData
+            }
+        );
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            message.innerHTML = `
+                <div class="alert alert-success">
+                    ${data.message}
+                </div>
+            `;
+
+            setTimeout(() => {
+                const currentDate =
+                    document.getElementById(
+                        'date'
+                    ).value;
+
+                window.location.href =
+                    `/booking/{{ master.id }}/?date=${currentDate}`;
+            }, 1000);
+
+        } else {
+
+            message.innerHTML = `
+                <div class="alert alert-danger">
+                    ${data.message}
+                </div>
+            `;
+        }
+    }
+
+</script>
+
+</body>
+</html>
