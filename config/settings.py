@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ymg3m^vn+oqk+qrzuqbxlhs#6(x#fe#t-)&t4hgmn^utj9d4lk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['barbershop-crm.onrender.com', '127.0.0.1']
 
 
 # Application definition
