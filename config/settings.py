@@ -4,9 +4,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-ymg3m^vn+oqk+qrzuqbxlhs#6(x#fe#t-)&t4hgmn^utj9d4lk'
 
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "127.0.0.1",
+    "localhost",
+    "barbershop-crm.onrender.com",
+]
 
 INSTALLED_APPS = [
     'daphne',
@@ -110,3 +114,6 @@ STATICFILES_DIRS = [
 
 LOGOUT_REDIRECT_URL = '/'
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://barbershop-crm.onrender.com",
+]
