@@ -211,15 +211,23 @@
 
         <div class="master-card">
 
-            {% if master.photo %}
-                <img
-                    src="{{ master.photo.url }}"
-                    class="barber-image"
-                >
-            {% else %}
+            {% if forloop.counter == 1 %}
                 <img
                     src="{% static 'images/barber1.jpg' %}"
                     class="barber-image"
+                    alt="Daniel Brooks"
+                >
+            {% elif forloop.counter == 2 %}
+                <img
+                    src="{% static 'images/barber2.jpg' %}"
+                    class="barber-image"
+                    alt="Michael Carter"
+                >
+            {% else %}
+                <img
+                    src="{% static 'images/barber3.jpg' %}"
+                    class="barber-image"
+                    alt="Alex Johnson"
                 >
             {% endif %}
 
